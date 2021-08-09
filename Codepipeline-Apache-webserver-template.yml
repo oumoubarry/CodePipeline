@@ -1,0 +1,34 @@
+Resources:
+  MyEC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: t2.micro
+      ImageId:  ami-ID
+      SubnetId: subnet-ID
+      SecurityGroupIds:
+        - sgID
+      # SecurityGroups :
+      #   - !Ref MySecurityGroup
+      Tags:
+        - Key: Name
+          Value: SampleNetworkCrossStack-EC2
+
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          yum update -y 
+          yum install httpd -y
+          systemctl start httpd
+          systemctl enable httpd 
+          echo "Oumou is the team leader"> var/www/html/index.html
+Outputs:
+  EC2InstanceOutput:
+    Description: Display the Private IP address of the instance.
+    Value: !GetAtt MyEC2Instance.PrivateIp
+  EC2InstanceOutput2:
+    Description: Display the Dnsname of the instance
+    Value: !GetAtt MyEC2Instance.PublicDnsName
+  # RETURN A PUBLIC IP ATTRIBUTE
+
+
+
